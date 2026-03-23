@@ -1,0 +1,23 @@
+name: テスト自動実行
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: コードをチェックアウト
+      uses: actions/checkout@v3
+
+    - name: Pythonをセットアップ
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: テストを実行
+      run: python -X utf8 day39/test_sample.py
