@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>管理画面</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        .logout-btn {
+            background: white;
+            color: #4CAF50;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+        .content {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .welcome-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex: 1;
+            text-align: center;
+        }
+        .stat-card h2 {
+            color: #4CAF50;
+            font-size: 2em;
+            margin: 0;
+        }
+        .stat-card p {
+            color: #666;
+            margin: 5px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 じゅんの管理画面</h1>
+        <a href="/logout" class="logout-btn">ログアウト</a>
+    </div>
+    <div class="content">
+        <div class="welcome-box">
+            <h2>ようこそ！ログインに成功しました 🎉</h2>
+            <p>ここは管理者だけが見られるページです。</p>
+        </div>
+        <div class="stats">
+            <div class="stat-card">
+                <h2>42</h2>
+                <p>📅 完了したDay</p>
+            </div>
+            <div class="stat-card">
+                <h2>90点</h2>
+                <p>⭐ 平均スコア</p>
+            </div>
+            <div class="stat-card">
+                <h2>🔑</h2>
+                <p>セッション管理中</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
