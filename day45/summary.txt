@@ -1,0 +1,37 @@
+Day 45 - FlaskとSQLiteで学習記録管理システム（CRUD）
+完了日：2026年3月26日
+
+【今日学んだこと】
+1. CRUDとは
+   - Create（作成）：学習記録を追加
+   - Read（読む）：学習記録を一覧表示
+   - Update（更新）：記録を編集（次のステップ）
+   - Delete（削除）：記録を削除
+
+2. 作成したファイル
+   - app.py（Flask + SQLite + bcrypt）
+   - templates/register.html（新規登録画面）
+   - templates/login.html（ログイン画面）
+   - templates/dashboard.html（学習記録一覧）
+   - templates/add.html（記録追加画面）
+
+3. DBのテーブル構成
+   - usersテーブル：id・username・password
+   - recordsテーブル：id・user_id・day・content・score・created_at
+
+4. 実装した機能
+   - ユーザー登録（bcryptでパスワードハッシュ化）
+   - ログイン・ログアウト
+   - 学習記録の追加・表示・削除
+   - ユーザーごとのデータ管理
+   - 統計表示（完了Day数・平均スコア）
+
+【実務での活用例】
+- 会員制の学習管理サービス
+- 社内スキル管理システム
+- 顧客管理アプリ（CRUDは全アプリの基本）
+
+【今日のポイント】
+- CRUDは全てのWebアプリの基本
+- ユーザーIDでデータを紐付けると、ユーザーごとのデータ管理ができる
+- テーブルを複数持つことで複雑なデータも管理できる
