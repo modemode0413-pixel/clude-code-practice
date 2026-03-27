@@ -17,6 +17,7 @@
         th { background: #4CAF50; color: white; padding: 12px; text-align: left; }
         td { padding: 10px 12px; border-bottom: 1px solid #eee; }
         .del { color: red; text-decoration: none; }
+        .edit { color: #2196F3; text-decoration: none; margin-right: 8px; }
         .empty { text-align: center; padding: 40px; color: #999; background: white; border-radius: 8px; }
     </style>
 </head>
@@ -43,14 +44,17 @@
         <a href="/add" class="add-btn">➕ 学習記録を追加</a>
         {% if records %}
         <table>
-            <tr><th>Day</th><th>内容</th><th>スコア</th><th>登録日</th><th>削除</th></tr>
+            <tr><th>Day</th><th>内容</th><th>スコア</th><th>登録日</th><th>操作</th></tr>
             {% for r in records %}
             <tr>
                 <td>Day {{ r[1] }}</td>
                 <td>{{ r[2] }}</td>
                 <td>{{ r[3] }}点</td>
                 <td>{{ r[4][:10] }}</td>
-                <td><a href="/delete/{{ r[0] }}" class="del" onclick="return confirm('削除しますか？')">🗑️</a></td>
+                <td>
+                    <a href="/edit/{{ r[0] }}" class="edit">✏️</a>
+                    <a href="/delete/{{ r[0] }}" class="del" onclick="return confirm('削除しますか？')">🗑️</a>
+                </td>
             </tr>
             {% endfor %}
         </table>

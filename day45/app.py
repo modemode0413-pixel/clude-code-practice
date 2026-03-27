@@ -109,6 +109,27 @@ def add():
         return redirect(url_for("dashboard"))
     return render_template("add.html")
 
+@app.route("/edit/<int:record_id>", methods=["GET", "POST"])
+def edit(record_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    if request.method == "POST":
+        day = request.form["day"]
+        content = request.form["content"]
+        score = request.form["score"]
+        c.execute("UPDATE records SET day = ?, content = ?, score = ? WHERE id = ? AND user_id = ?",
+                  (day, content, score, record_id, session["user_id"]))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("dashboard"))
+    c.execute("SELECT id, day, content, score FROM records WHERE id = ? AND user_id = ?",
+              (record_id, session["user_id"]))
+    record = c.fetchone()
+    conn.close()
+    return render_template("edit.html", record=record)
+
 @app.route("/delete/<int:record_id>")
 def delete(record_id):
     if "user_id" not in session:
