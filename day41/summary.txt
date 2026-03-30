@@ -1,0 +1,115 @@
+====================================
+DAY 41: 環境変数と秘密情報の管理
+====================================
+
+■ なぜ必要か？
+----------------------------------------
+コードをGitHubに公開するとき、パスワードやAPIキーが
+コードに直接書いてあると、世界中の人に見られてしまう。
+
+【実際に起きた事故】
+・AWSのAPIキーをGitHubに誤ってpush
+  → 不正アクセスされ、数百万円の請求が来た
+・データベースのパスワードを公開
+  → 顧客データが全部盗まれた
+
+だから「秘密情報は.envに分離する」がルール！
+
+
+■ 仕組み
+----------------------------------------
+【ファイル構成】
+  app.py         ← GitHubに上げる（コード）
+  .env           ← GitHubに上げない（秘密）
+  .gitignore     ← .envを除外する設定
+
+【流れ】
+  .env に書く
+    ↓
+  python-dotenv が読み込む（load_dotenv()）
+    ↓
+  os.environ.get("変数名") で取得する
+    ↓
+  コードの中で使う
+
+
+■ .envファイルの書き方
+----------------------------------------
+APP_NAME=じゅんの猛烈claude code道場
+SECRET_KEY=my-super-secret-key-12345
+ADMIN_NAME=じゅん
+
+ルール：
+  ・= の前後にスペースを入れない
+  ・文字列に " " は不要
+  ・# はコメント
+
+
+■ Pythonでの読み込み方
+----------------------------------------
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # .envを読み込む（これを忘れずに！）
+
+name = os.environ.get("APP_NAME")          # 値を取得
+name = os.environ.get("APP_NAME", "デフォ") # デフォルト値付き
+
+
+■ .gitignoreの書き方
+----------------------------------------
+.env              ← これだけでOK
+
+これにより git add しても .env は無視される。
+絶対に .env を git add しないこと！
+
+
+■ 実務での使い方
+----------------------------------------
+【Webサービス開発】
+DATABASE_URL=postgresql://user:pass@host/db
+SECRET_KEY=ランダムな長い文字列
+DEBUG=False
+
+【LINE Bot】
+LINE_CHANNEL_SECRET=xxxxx
+LINE_CHANNEL_ACCESS_TOKEN=yyyyy
+
+【OpenAI API】
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxx
+
+【本番と開発の切り替え】
+ENVIRONMENT=development  # または production
+
+
+■ Renderでの環境変数設定
+----------------------------------------
+Renderにデプロイするとき、.envはGitHubに上げないので
+Renderのダッシュボードで直接設定する：
+
+  Settings → Environment → Add Environment Variable
+  キー名: SECRET_KEY
+  値: my-super-secret-key-12345
+
+こうすることで、コードに秘密情報を書かずに
+本番環境でも使えるようになる。
+
+
+■ 覚えること（実務チェックリスト）
+----------------------------------------
+□ パスワード・APIキーは絶対コードに直接書かない
+□ .env ファイルに秘密情報を書く
+□ .gitignore に .env を追加する
+□ os.environ.get() で読み込む
+□ load_dotenv() を忘れずに呼ぶ
+□ クラウドには管理画面から環境変数を設定する
+
+
+■ 本日の学習成果
+----------------------------------------
+・.envファイルを作成して秘密情報を管理
+・python-dotenvでFlaskアプリに読み込み
+・.gitignoreで.envをGit管理から除外
+・ブラウザで動作確認（APP_NAMEの変更も確認）
+
+====================================
