@@ -78,10 +78,15 @@ def login():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
+    keyword = request.args.get("keyword", "")
     conn = sqlite3.connect(DB)
     c = conn.cursor()
-    c.execute("SELECT id, day, content, score, created_at FROM records WHERE user_id = ? ORDER BY day",
-              (session["user_id"],))
+    if keyword:
+        c.execute("SELECT id, day, content, score, created_at FROM records WHERE user_id = ? AND content LIKE ? ORDER BY day",
+                  (session["user_id"], f"%{keyword}%"))
+    else:
+        c.execute("SELECT id, day, content, score, created_at FROM records WHERE user_id = ? ORDER BY day",
+                  (session["user_id"],))
     records = c.fetchall()
     conn.close()
     total = len(records)
@@ -90,7 +95,8 @@ def dashboard():
                            username=session["username"],
                            records=records,
                            total=total,
-                           avg=avg)
+                           avg=avg,
+                           keyword=keyword)
 
 @app.route("/add", methods=["GET", "POST"])
 def add():

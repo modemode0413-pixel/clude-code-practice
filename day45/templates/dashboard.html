@@ -19,6 +19,10 @@
         .del { color: red; text-decoration: none; }
         .edit { color: #2196F3; text-decoration: none; margin-right: 8px; }
         .empty { text-align: center; padding: 40px; color: #999; background: white; border-radius: 8px; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+        .search-box button { padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; }
+        .clear-btn { padding: 10px 16px; background: #aaa; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; }
     </style>
 </head>
 <body>
@@ -42,6 +46,11 @@
             </div>
         </div>
         <a href="/add" class="add-btn">➕ 学習記録を追加</a>
+        <form class="search-box" method="GET" action="/dashboard">
+            <input type="text" name="keyword" placeholder="🔍 キーワードで検索..." value="{{ keyword }}">
+            <button type="submit">検索</button>
+            <a href="/dashboard" class="clear-btn">クリア</a>
+        </form>
         {% if records %}
         <table>
             <tr><th>Day</th><th>内容</th><th>スコア</th><th>登録日</th><th>操作</th></tr>
