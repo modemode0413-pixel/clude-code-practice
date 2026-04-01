@@ -6,7 +6,26 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: sans-serif; background: #f0f4f8; height: 100vh; display: flex; flex-direction: column; }
-        header { background: #5c6bc0; color: white; padding: 16px 24px; font-size: 20px; font-weight: bold; }
+        header {
+            background: #5c6bc0;
+            color: white;
+            padding: 16px 24px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #clear-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        #clear-btn:hover { background: rgba(255,255,255,0.35); }
         #chat-box {
             flex: 1;
             overflow-y: auto;
@@ -36,14 +55,11 @@
             border-bottom-left-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .label {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 2px;
-        }
+        .label { font-size: 11px; color: #888; margin-bottom: 2px; }
         .msg-wrap { display: flex; flex-direction: column; }
         .msg-wrap.user { align-items: flex-end; }
         .msg-wrap.claude { align-items: flex-start; }
+        .timestamp { font-size: 10px; color: #bbb; margin-top: 3px; }
         #input-area {
             display: flex;
             gap: 10px;
@@ -72,15 +88,38 @@
         #send-btn:hover { background: #3f51b5; }
         #send-btn:disabled { background: #aaa; cursor: not-allowed; }
         .thinking { color: #888; font-style: italic; font-size: 14px; }
+        .history-label {
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+            padding: 8px;
+            border-bottom: 1px dashed #ddd;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
-    <header>🤖 Claude チャット（Day 48）</header>
+    <header>
+        🤖 Claude チャット（Day 49）
+        <button id="clear-btn" onclick="clearHistory()">🗑 履歴を消す</button>
+    </header>
     <div id="chat-box">
+        {% if history %}
+        <div class="history-label">── 過去の会話履歴 ──</div>
+        {% for msg in history %}
+        <div class="msg-wrap {{ msg.role }}">
+            <div class="label">{{ "あなた" if msg.role == "user" else "Claude" }}</div>
+            <div class="bubble {{ msg.role }}-bubble">{{ msg.message }}</div>
+            <div class="timestamp">{{ msg.timestamp }}</div>
+        </div>
+        {% endfor %}
+        <div class="history-label">── ここから新しい会話 ──</div>
+        {% else %}
         <div class="msg-wrap claude">
             <div class="label">Claude</div>
             <div class="bubble claude-bubble">こんにちは！何でも聞いてください😊</div>
         </div>
+        {% endif %}
     </div>
     <div id="input-area">
         <input type="text" id="user-input" placeholder="メッセージを入力..." autofocus>
@@ -92,7 +131,9 @@
         const input = document.getElementById("user-input");
         const btn = document.getElementById("send-btn");
 
-        // Enterキーでも送信できるようにする
+        // ページ読み込み時に最下部にスクロール
+        window.onload = () => { chatBox.scrollTop = chatBox.scrollHeight; };
+
         input.addEventListener("keydown", function(e) {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -120,12 +161,10 @@
             const message = input.value.trim();
             if (!message) return;
 
-            // ユーザーのメッセージを表示
             addBubble("user", message);
             input.value = "";
             btn.disabled = true;
 
-            // 「考え中...」を表示
             const thinkingBubble = addBubble("claude", "考え中...");
             thinkingBubble.classList.add("thinking");
 
@@ -136,8 +175,6 @@
                     body: JSON.stringify({ message })
                 });
                 const data = await res.json();
-
-                // 「考え中...」をClaudeの返答に置き換える
                 thinkingBubble.classList.remove("thinking");
                 thinkingBubble.textContent = data.reply || data.error || "エラーが発生しました";
             } catch (err) {
@@ -147,6 +184,12 @@
             btn.disabled = false;
             input.focus();
             chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function clearHistory() {
+            if (!confirm("会話履歴を全て削除しますか？")) return;
+            await fetch("/clear", { method: "POST" });
+            location.reload();
         }
     </script>
 </body>
