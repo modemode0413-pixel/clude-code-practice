@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import bcrypt
 
 app = Flask(__name__)
@@ -54,6 +54,7 @@ def register():
                 c.execute("INSERT INTO users (username, password) VALUES (?, ?)",
                           (username, hashed))
                 conn.commit()
+            flash("✅ 登録しました。ログインしてください", "success")
             return redirect(url_for("login"))
         except sqlite3.IntegrityError:
             error = "このユーザー名はすでに使われています"
@@ -131,6 +132,7 @@ def add():
             c.execute("INSERT INTO records (user_id, day, content, score) VALUES (?, ?, ?, ?)",
                       (session["user_id"], day, content, score))
             conn.commit()
+        flash("✅ 記録を保存しました", "success")
         return redirect(url_for("dashboard"))
     return render_template("add.html")
 
@@ -147,6 +149,7 @@ def edit(record_id):
             c.execute("UPDATE records SET day = ?, content = ?, score = ? WHERE id = ? AND user_id = ?",
                       (day, content, score, record_id, session["user_id"]))
             conn.commit()
+        flash("✅ 記録を更新しました", "success")
         return redirect(url_for("dashboard"))
     with get_db() as conn:
         c = conn.cursor()
@@ -164,11 +167,13 @@ def delete(record_id):
         c.execute("DELETE FROM records WHERE id = ? AND user_id = ?",
                   (record_id, session["user_id"]))
         conn.commit()
+    flash("🗑 記録を削除しました", "info")
     return redirect(url_for("dashboard"))
 
 @app.route("/logout")
 def logout():
     session.clear()
+    flash("👋 ログアウトしました", "info")
     return redirect(url_for("login"))
 
 if __name__ == "__main__":

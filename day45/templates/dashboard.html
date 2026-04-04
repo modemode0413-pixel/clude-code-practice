@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+ <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>学習記録</title>
@@ -28,6 +28,8 @@
         .pagination a:hover { background: #e8f5e9; border-color: #4CAF50; }
         .pagination .current { background: #4CAF50; color: white; border-color: #4CAF50; font-weight: bold; }
         .pagination .disabled { color: #bbb; pointer-events: none; background: #f9f9f9; }
+        .flash-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 10px 16px; border-radius: 6px; margin-bottom: 16px; }
+        .flash-info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; padding: 10px 16px; border-radius: 6px; margin-bottom: 16px; }
     </style>
 </head>
 <body>
@@ -36,6 +38,11 @@
         <a href="/logout"><button class="logout">ログアウト</button></a>
     </header>
     <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="flash-{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
         <div class="stats">
             <div class="stat">
                 <h2>{{ total }}</h2>
