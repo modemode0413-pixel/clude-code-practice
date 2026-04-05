@@ -158,17 +158,25 @@ def edit(record_id):
         record = c.fetchone()
     return render_template("edit.html", record=record)
 
-@app.route("/delete/<int:record_id>")
+@app.route("/delete/<int:record_id>", methods=["GET", "POST"])
 def delete(record_id):
     if "user_id" not in session:
         return redirect(url_for("login"))
+    if request.method == "POST":
+        with get_db() as conn:
+            c = conn.cursor()
+            c.execute("DELETE FROM records WHERE id = ? AND user_id = ?",
+                      (record_id, session["user_id"]))
+            conn.commit()
+        flash("🗑 記録を削除しました", "info")
+        return redirect(url_for("dashboard"))
+    # GET：確認ページを表示する
     with get_db() as conn:
         c = conn.cursor()
-        c.execute("DELETE FROM records WHERE id = ? AND user_id = ?",
+        c.execute("SELECT id, day, content FROM records WHERE id = ? AND user_id = ?",
                   (record_id, session["user_id"]))
-        conn.commit()
-    flash("🗑 記録を削除しました", "info")
-    return redirect(url_for("dashboard"))
+        record = c.fetchone()
+    return render_template("delete_confirm.html", record=record)
 
 @app.route("/logout")
 def logout():
